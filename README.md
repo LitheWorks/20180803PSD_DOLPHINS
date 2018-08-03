@@ -1,6 +1,6 @@
 # Torpydo
 
-A simple game of Battleship, written in Python.
+A simple game of Battleship, written in Python. Its so cool
 
 # Getting started
 
