@@ -48,7 +48,7 @@ docker run -it --env PYTHONPATH=/torpydo --volume $PWD:/torpydo --workdir /torpy
 pip install -r requirements.txt
 ```
 
-# Launching the game
+# Launching this game
 
 ```bash
 python -m torpydo
