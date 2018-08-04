@@ -117,6 +117,7 @@ class AsciiUI(BaseUI):
 
     def draw_damage(self, shooter, shot: Point, hit: bool, sunk_ship: Optional[Ship]):
         if sunk_ship:
+            print(asciiart.ASCII_CANNON)
             print(f"{shooter.name} fired at {self.point_to_col_row(shot)} and SANK a {sunk_ship.name}!\n")
         else:
             print(f"{shooter.name} fired at {self.point_to_col_row(shot)} and {'hit' if hit else 'missed'}!\n")
