@@ -97,40 +97,47 @@ class AsciiUI(BaseUI):
         )
 
     def draw_board(self, turn_number: int, player):
+<<<<<<< HEAD
         if player.is_computer():
             pass
         else:
             COLORED_HIT = colorfy('*', Color.white_on_blue)
             COLORED_MISSED = colorfy('○', Color.white_on_red)
+=======
+        COLORED_HIT = colorfy('*', "1;37;41")
+        COLORED_MISSED = colorfy('○', "1;37;44")
+>>>>>>> b04e1da70f4a11ec6db53e4fbaebd148891dc102
 
+        print()
+        print(f"{player.name}, turn #{turn_number}")
+        print()
+        cols = string.ascii_uppercase[:self.play_field.width]
+        print(self.numbers_spacer, cols, self.SPACER, self.numbers_spacer, cols, sep='')
+        for y in range(self.play_field.height):
+            print(self.numbers_column.format(y + 1), end='')
+            for x in range(self.play_field.width):
+                shot = player.get_shot_at(Point(x, y))
+                if shot:
+                    print(COLORED_HIT if shot.hit else COLORED_MISSED, end='')
+                else:
+                    print('·', end='')
+            print(self.SPACER, self.numbers_column.format(y + 1), sep='', end='')
+            for x in range(self.play_field.width):
+                pos = Point(x, y)
+                oppo = pos in player.opponent_shots
+                char = '○' if oppo else '·'
+                for ship in player.fleet:
+                    if pos in ship.all_positions:
+                        char = '*' if oppo else '═' if ship.position[1] == Orientation.HORIZONTAL else '║'
+                print(char, end='')
             print()
-            print(f"{player.name}, turn #{turn_number}")
-            cols = string.ascii_uppercase[:self.play_field.width]
-            print(self.numbers_spacer, cols, self.SPACER, self.numbers_spacer, cols, sep='')
-            for y in range(self.play_field.height):
-                print(self.numbers_column.format(y + 1), end='')
-                for x in range(self.play_field.width):
-                    shot = player.get_shot_at(Point(x, y))
-                    if shot:
-                        print(COLORED_HIT if shot.hit else COLORED_MISSED, end='')
-                    else:
-                        print('·', end='')
-                print(self.SPACER, self.numbers_column.format(y + 1), sep='', end='')
-                for x in range(self.play_field.width):
-                    pos = Point(x, y)
-                    oppo = pos in player.opponent_shots
-                    char = '○' if oppo else '·'
-                    for ship in player.fleet:
-                        if pos in ship.all_positions:
-                            char = '*' if oppo else '═' if ship.position[1] == Orientation.HORIZONTAL else '║'
-                    print(char, end='')
-                print()
 
     def draw_damage(self, shooter, shot: Point, hit: bool, sunk_ship: Optional[Ship]):
         if sunk_ship:
-            print(f"{shooter.name} fired at {self.point_to_col_row(shot)} and SANK a {sunk_ship.name}!")
+            print(asciiart.ASCII_CANNON)
+            print(f"{shooter.name} fired at {self.point_to_col_row(shot)} and SANK a {sunk_ship.name}!\n")
         else:
-            print(f"{shooter.name} fired at {self.point_to_col_row(shot)} and {'hit' if hit else 'missed'}!")
+            print(f"{shooter.name} fired at {self.point_to_col_row(shot)} and {'hit' if hit else 'missed'}!\n")
 
     def draw_victory(self, turn_number: int, victor, loser):
         print()
@@ -168,6 +175,8 @@ class AsciiUI(BaseUI):
                         AsciiUI.point_to_col_row(self.play_field.top_left),
                         AsciiUI.point_to_col_row(self.play_field.bottom_right)))
                 player_shot = self.col_row_to_point(input_value)
+            print()
+            print()
             print()
             return player_shot
         except EOFError:
