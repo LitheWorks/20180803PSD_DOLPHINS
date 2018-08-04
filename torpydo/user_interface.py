@@ -97,16 +97,15 @@ class AsciiUI(BaseUI):
         )
 
     def draw_board(self, turn_number: int, player):
-<<<<<<< HEAD
         if player.is_computer():
             pass
         else:
             COLORED_HIT = colorfy('*', Color.white_on_blue)
             COLORED_MISSED = colorfy('○', Color.white_on_red)
-=======
-        COLORED_HIT = colorfy('*', "1;37;41")
-        COLORED_MISSED = colorfy('○', "1;37;44")
->>>>>>> b04e1da70f4a11ec6db53e4fbaebd148891dc102
+# =======
+#         COLORED_HIT = colorfy('*', "1;37;41")
+#         COLORED_MISSED = colorfy('○', "1;37;44")
+# >>>>>>> b04e1da70f4a11ec6db53e4fbaebd148891dc102
 
         print()
         print(f"{player.name}, turn #{turn_number}")
