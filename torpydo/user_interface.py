@@ -3,10 +3,19 @@ from typing import Optional
 
 from torpydo import asciiart, TerminationRequested
 from torpydo.ships import PlayField, Point, Ship, Orientation
+from enum import Enum
 
 
-def colorfy(text, color_code):
+def colorfy(text, color):
+    color_code = color.value
     return f"\x1b[{color_code}m{text}\x1b[0m"
+
+
+class Color(Enum):
+    white_on_red = "1;37;41"
+    white_on_blue = "1;37;44"
+    green = "32"
+    blue = "34"
 
 
 class BaseUI(object):
@@ -20,6 +29,9 @@ class BaseUI(object):
         pass
 
     def draw_victory(self, turn_number: int, victor, loser):
+        pass
+
+    def draw_loss(self, turn_number: int, victor, loser):
         pass
 
     def get_player_shot(self, player) -> Point:
@@ -72,13 +84,24 @@ class AsciiUI(BaseUI):
         print(fight_title)
         print(asciiart.ASCII_DIVIDER)
         print()
+        print(colorfy(
+            'This is a battle between human and computer.\n'
+            'Our sophisticated AI system has gone rogue and androids are now taking over\n\n'
+            'Word has come from the president for you to save the world.\n'
+            '"We have the best ships. Destroy this nasty computer. It\'s up to you to make battleship great again"\n\n\n'
+            'The computer will attempt to strike down your ships after each turn.\n'
+            'In order to survive you must destroy the computers ships before it destroys you.\n'
+            'The fate of the world will be decided by this battle.\n'
+            'Will you rise to the challenge or crumble?\n',
+            Color.green)
+        )
 
     def draw_board(self, turn_number: int, player):
         if player.is_computer():
             pass
         else:
-            COLORED_HIT = colorfy('*', "1;37;41")
-            COLORED_MISSED = colorfy('○', "1;37;44")
+            COLORED_HIT = colorfy('*', Color.white_on_blue)
+            COLORED_MISSED = colorfy('○', Color.white_on_red)
 
             print()
             print(f"{player.name}, turn #{turn_number}")
@@ -103,7 +126,6 @@ class AsciiUI(BaseUI):
                     print(char, end='')
                 print()
 
-
     def draw_damage(self, shooter, shot: Point, hit: bool, sunk_ship: Optional[Ship]):
         if sunk_ship:
             print(f"{shooter.name} fired at {self.point_to_col_row(shot)} and SANK a {sunk_ship.name}!")
@@ -112,7 +134,15 @@ class AsciiUI(BaseUI):
 
     def draw_victory(self, turn_number: int, victor, loser):
         print()
-        print(f"{victor.name}'s mighty fleet vanquished {loser.name} in turn {turn_number}!")
+        print(f"{victor.name}'s mighty fleet vanquished {loser.name} in turn {turn_number}!\n"
+              "The computer cries out 'I'll be back!'"
+              )
+
+    def draw_loss(self, turn_number: int, victor, loser):
+        print()
+        print("You're gonna need a bigger boat.\n"
+            f"{victor.name}'s mighty fleet vanquished {loser.name} in turn {turn_number}!"
+              )
 
     def draw_game_stopped(self, player_1, player_2):
         print("The game ended before either fleet was completely defeated.")
@@ -125,13 +155,18 @@ class AsciiUI(BaseUI):
             return player.get_computer_shot()
 
         # Otherwise get a shot from user input
-        print("Player, it's your turn.")
+        print()
+        print()
+        print()
+        print(colorfy("Player, it's your turn.", Color.blue))
         try:
             player_shot = None
             while player_shot is None:
-                input_value = input('Please enter a coordinate between {} and {}, or CTRL-D to quit: '.format(
-                    AsciiUI.point_to_col_row(self.play_field.top_left),
-                    AsciiUI.point_to_col_row(self.play_field.bottom_right)))
+                input_value = input(
+                    'Please enter a coordinate between {} and {} to fire at a ship, or CTRL-D to quit: '
+                    .format(
+                        AsciiUI.point_to_col_row(self.play_field.top_left),
+                        AsciiUI.point_to_col_row(self.play_field.bottom_right)))
                 player_shot = self.col_row_to_point(input_value)
             print()
             return player_shot

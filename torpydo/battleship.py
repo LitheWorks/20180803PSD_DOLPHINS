@@ -131,7 +131,7 @@ class BattleshipGame(object):
         self.player_2.record_shot(computer_shot, hit)
         self.ui.draw_damage(self.player_2, computer_shot, hit, sunk_ship)
         if not self.player_1.fleet.is_alive():
-            self.ui.draw_victory(turn_number, self.player_2, self.player_1)
+            self.ui.draw_loss(turn_number, self.player_2, self.player_1)
             return False
         return True
 
