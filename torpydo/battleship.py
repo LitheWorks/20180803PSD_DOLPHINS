@@ -4,6 +4,7 @@ from torpydo import TerminationRequested
 from torpydo.ships import Fleet, PlayField, Point, Ship
 from torpydo.user_interface import AsciiUI, BaseUI
 
+# Board size
 BATTLEFIELD_ROWS = 8
 BATTLEFIELD_COLUMNS = 8
 

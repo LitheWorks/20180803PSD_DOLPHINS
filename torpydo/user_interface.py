@@ -5,6 +5,10 @@ from torpydo import asciiart, TerminationRequested
 from torpydo.ships import PlayField, Point, Ship, Orientation
 
 
+def colorfy(text, color_code):
+    return f"\x1b[{color_code}m{text}\x1b[0m"
+
+
 class BaseUI(object):
     def __init__(self, play_field: PlayField):
         self.play_field = play_field
@@ -86,6 +90,9 @@ class AsciiUI(BaseUI):
         if player.is_computer():
             pass
         else:
+            COLORED_HIT = colorfy('*', "1;37;41")
+            COLORED_MISSED = colorfy('○', "1;37;44")
+
             print()
             print(f"{player.name}, turn #{turn_number}")
             cols = string.ascii_uppercase[:self.play_field.width]
@@ -95,17 +102,17 @@ class AsciiUI(BaseUI):
                 for x in range(self.play_field.width):
                     shot = player.get_shot_at(Point(x, y))
                     if shot:
-                        print('$' if shot.hit else '☺', end='')
+                        print(COLORED_HIT if shot.hit else COLORED_MISSED, end='')
                     else:
                         print('·', end='')
                 print(self.SPACER, self.numbers_column.format(y + 1), sep='', end='')
                 for x in range(self.play_field.width):
                     pos = Point(x, y)
                     oppo = pos in player.opponent_shots
-                    char = '☺' if oppo else '·'
+                    char = '○' if oppo else '·'
                     for ship in player.fleet:
                         if pos in ship.all_positions:
-                            char = '$' if oppo else '═' if ship.position[1] == Orientation.HORIZONTAL else '║'
+                            char = '*' if oppo else '═' if ship.position[1] == Orientation.HORIZONTAL else '║'
                     print(char, end='')
                 print()
 
