@@ -5,7 +5,7 @@ from torpydo import asciiart, TerminationRequested
 from torpydo.ships import PlayField, Point, Ship, Orientation
 
 
-def colorfy(self, text, color_code):
+def colorfy(text, color_code):
     return f"\x1b[{color_code}m{text}\x1b[0m"
 
 
