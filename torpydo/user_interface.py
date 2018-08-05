@@ -3,10 +3,19 @@ from typing import Optional
 
 from torpydo import asciiart, TerminationRequested
 from torpydo.ships import PlayField, Point, Ship, Orientation
+from enum import Enum
 
 
-def colorfy(text, color_code):
+def colorfy(text, color):
+    color_code = color.value
     return f"\x1b[{color_code}m{text}\x1b[0m"
+
+
+class Color(Enum):
+    white_on_red = "1;37;41"
+    white_on_blue = "1;37;44"
+    green = "32"
+    blue = "34"
 
 
 class BaseUI(object):
@@ -75,7 +84,7 @@ class AsciiUI(BaseUI):
         print(fight_title)
         print(asciiart.ASCII_DIVIDER)
         print()
-        print(
+        print(colorfy(
             'This is a battle between human and computer.\n'
             'Our sophisticated AI system has gone rogue and androids are now taking over\n\n'
             'Word has come from the president for you to save the world.\n'
@@ -83,12 +92,14 @@ class AsciiUI(BaseUI):
             'The computer will attempt to strike down your ships after each turn.\n'
             'In order to survive you must destroy the computers ships before it destroys you.\n'
             'The fate of the world will be decided by this battle.\n'
-            'Will you rise to the challenge or crumble?\n'
+            'Will you rise to the challenge or crumble?\n',
+            Color.green)
         )
 
     def draw_board(self, turn_number: int, player):
-        COLORED_HIT = colorfy('*', "1;37;41")
-        COLORED_MISSED = colorfy('○', "1;37;44")
+
+        COLORED_HIT = colorfy('*', Color.white_on_blue)
+        COLORED_MISSED = colorfy('○', Color.white_on_red)
 
         print()
         print(f"{player.name}, turn #{turn_number}")
@@ -113,7 +124,6 @@ class AsciiUI(BaseUI):
                         char = '*' if oppo else '═' if ship.position[1] == Orientation.HORIZONTAL else '║'
                 print(char, end='')
             print()
-
 
     def draw_damage(self, shooter, shot: Point, hit: bool, sunk_ship: Optional[Ship]):
         if sunk_ship:
@@ -148,13 +158,15 @@ class AsciiUI(BaseUI):
         print()
         print()
         print()
-        print(f"Player, it's your turn.")
+        print(colorfy("Player, it's your turn.", Color.blue))
         try:
             player_shot = None
             while player_shot is None:
-                input_value = input('Please enter a coordinate between {} and {} to fire at a ship, or CTRL-D to quit: '.format(
-                    AsciiUI.point_to_col_row(self.play_field.top_left),
-                    AsciiUI.point_to_col_row(self.play_field.bottom_right)))
+                input_value = input(
+                    'Please enter a coordinate between {} and {} to fire at a ship, or CTRL-D to quit: '
+                    .format(
+                        AsciiUI.point_to_col_row(self.play_field.top_left),
+                        AsciiUI.point_to_col_row(self.play_field.bottom_right)))
                 player_shot = self.col_row_to_point(input_value)
             print()
             print()
