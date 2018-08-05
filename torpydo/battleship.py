@@ -115,6 +115,8 @@ class BattleshipGame(object):
             self.ui.draw_game_stopped(self.player_1, self.player_2)
             pass
 
+
+
     def do_turn(self, turn_number):
         self.ui.draw_board(turn_number, self.player_1)
         player_shot = self.ui.get_player_shot(self.player_1)
